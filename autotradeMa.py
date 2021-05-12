@@ -55,7 +55,7 @@ while True:
             if target_price < current_price and ma15 < current_price:
                 krw = get_balance("KRW")
                 if krw > 5000:
-                    upbit.buy_market_order("KRW-IQ", krw)
+                    upbit.buy_market_order("KRW-IQ", krw*0.9995)
         else:
             iq = get_balance("IQ")
             if iq > 0.00008:
