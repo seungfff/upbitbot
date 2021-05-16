@@ -1,9 +1,20 @@
 import time
 import pyupbit
 import datetime
+import requests
 
 access = "LPBFmfkxrRHptrldCidIGfCGGtbFk0jXqv0xBvx4"
 secret = "AlTtv1GKSFqmoDtqCK3S4aRdedNP5hjbpC1fCqE5"
+
+
+def post_message(token, channel, text):
+    response = requests.post("https://slack.com/api/chat.postMessage",
+        headers={"Authorization": "Bearer "+token},
+        data={"channel": channel,"text": text}
+    )
+    print(response)
+ 
+myToken = "xoxb-2054471993015-2093053772496-AnBEQSzQBrKyk8S4e41954xf"
 
 def get_target_price(ticker, k):
     """변동성 돌파 전략으로 매수 목표가 조회"""
@@ -39,12 +50,13 @@ def get_current_price(ticker):
 
 # 로그인
 upbit = pyupbit.Upbit(access, secret)
-print("autotrade start")
 
 # 자동매매 시작
 while True:
     try:
         now = datetime.datetime.now()
+        nowDate = now.strftime('%Y-%m-%d')
+        
         start_time = get_start_time("KRW-DOGE")
         end_time = start_time + datetime.timedelta(days=1)
 
@@ -52,16 +64,22 @@ while True:
             target_price = get_target_price("KRW-DOGE", 0.3)
             ma15 = get_ma15("KRW-DOGE")
             current_price = get_current_price("KRW-DOGE")
-         
+            if start_time == now:
+                post_message(myToken,"#event",str(nowDate)+"  매수 목표가 : "+str(target_price))
+                post_message(myToken,"#event",str(nowDate)+"  매도 목표가 : "+str(ma15))
+
             if target_price < current_price and ma15 < current_price:
+                post_message(myToken,"#event",str(now)+"매수 신호포착 및 매수주문 : "+str(target_price))
                 krw = get_balance("KRW")
                 if krw > 5000:
                     upbit.buy_market_order("KRW-DOGE", krw*0.9995)
         else:
             iq = get_balance("DOGE")
             if iq > 0.00008:
+                post_message(myToken,"#event",str(now)+"매도 신호포착 및 매수주문 : "+str(ma15))
                 upbit.sell_market_order("KRW-DOGE", iq)
         time.sleep(1)
     except Exception as e:
         print(e)
+        post_message(myToken,"#event",e)
         time.sleep(1)
