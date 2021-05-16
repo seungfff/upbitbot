@@ -69,14 +69,14 @@ while True:
                 post_message(myToken,"#event",str(nowDate)+"  매도 목표가 : "+str(ma15))
 
             if target_price < current_price and ma15 < current_price:
-                post_message(myToken,"#event",str(now)+"매수 신호포착 및 매수주문 : "+str(target_price))
+                post_message(myToken,"#event",str(now)+"  매수 신호포착 및 매수주문 : "+str(target_price))
                 krw = get_balance("KRW")
                 if krw > 5000:
                     upbit.buy_market_order("KRW-DOGE", krw*0.9995)
         else:
             iq = get_balance("DOGE")
             if iq > 0.00008:
-                post_message(myToken,"#event",str(now)+"매도 신호포착 및 매수주문 : "+str(ma15))
+                post_message(myToken,"#event",str(now)+"  매도 신호포착 및 매수주문 : "+str(ma15))
                 upbit.sell_market_order("KRW-DOGE", iq)
         time.sleep(1)
     except Exception as e:
