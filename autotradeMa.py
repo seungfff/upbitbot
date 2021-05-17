@@ -14,7 +14,7 @@ def post_message(token, channel, text):
     )
     print(response)
  
-myToken = "xoxb-2054471993015-2093053772496-AnBEQSzQBrKyk8S4e41954xf"
+myToken = "xoxb-2054471993015-2093053772496-RaZjH0BBSpWx5GFcnRXaC1Vp"
 
 def get_target_price(ticker, k):
     """변동성 돌파 전략으로 매수 목표가 조회"""
@@ -56,6 +56,8 @@ while True:
     try:
         now = datetime.datetime.now()
         nowDate = now.strftime('%Y-%m-%d')
+        moningHour = 9
+        moningMinute = 0
         
         start_time = get_start_time("KRW-DOGE")
         end_time = start_time + datetime.timedelta(days=1)
@@ -64,7 +66,8 @@ while True:
             target_price = get_target_price("KRW-DOGE", 0.3)
             ma15 = get_ma15("KRW-DOGE")
             current_price = get_current_price("KRW-DOGE")
-            if start_time == now:
+
+            if moningHour == now.hour and moningMinute == now.minute: 
                 post_message(myToken,"#event",str(nowDate)+"  매수 목표가 : "+str(target_price))
                 post_message(myToken,"#event",str(nowDate)+"  매도 목표가 : "+str(ma15))
 
